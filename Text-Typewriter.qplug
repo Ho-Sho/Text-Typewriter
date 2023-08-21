@@ -1,0 +1,1071 @@
+-- Text Typewriter
+-- by Ho
+-- July 2023
+
+-- Information block for the plugin
+PluginInfo = {
+  Name = "UCI~Text Typewriter",
+  Version = "2.0",
+  BuildVersion = "2.0.0.0",
+  Id = "199bbf68-85d2-4a62-bc54-e67aaefda2dc",--<guid>
+  Author = "Hori Shogo",
+  Description = "Text Typewriter plugin"
+}
+
+-- Define the color of the plugin object in the design
+function GetColor(props)
+  return { 102, 102, 102 }
+end
+
+-- The name that will initially display when dragged into a design
+function GetPrettyName(props)
+  return "Text Typewriter plugin, version " .. PluginInfo.Version
+end
+
+-- Optional function used if plugin has multiple pages
+  PageNames = { "Single-Line","Multi-Line", "Help" }   --List the pages within the plugin
+function GetPages(props)
+  local pages = {}
+  for ix,name in ipairs(PageNames) do
+    table.insert(pages, {name = PageNames[ix]})
+  end
+  return pages
+end
+
+-- Define User configurable Properties of the plugin
+function GetProperties()
+  local props = {}
+  table.insert(props, { -- for enum property types
+    Name = "Input Texts",
+    Type = "integer",
+    Min = 1,        -- Minimum Value
+    Max = 10,       -- Maximum Value
+    Value = 4,      -- Default Value
+  })
+  return props
+end
+
+-- Defines the Controls used within the plugin
+function GetControls(props)
+  local ctrls = {}
+  table.insert(ctrls, {
+    Name = "InputText",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = tonumber(props["Input Texts"].Value),--Change
+    UserPin = true,
+    DefaultValue = "Sample Text Typewriter"
+  })
+  table.insert(ctrls, {
+    Name = "DisplayScrollTextLine",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = tonumber(props["Input Texts"].Value),--Change
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "DisplayScrollTextLetter",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "DisplayLupan",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "StartLetter",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "StartLine",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "StartEffect",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "LetterLoop",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "LineLoop",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "EffectLoop",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "LetterOK",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = tonumber(props["Input Texts"].Value), --Change
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "LineOK",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = tonumber(props["Input Texts"].Value),--Change
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "LetterTime",
+    ControlType = "Knob",
+    ControlUnit = "Float",
+    Min = 0,
+    Max = 5,
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true,
+    DefaultValue = 0.05
+  })
+  table.insert(ctrls, {
+    Name = "LineTime",
+    ControlType = "Knob",
+    ControlUnit = "Float",
+    Min = 0,
+    Max = 5,
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true,
+    DefaultValue = 0.05
+  })
+  table.insert(ctrls, {
+    Name = "EffectTime",
+    ControlType = "Knob",
+    ControlUnit = "Float",
+    Min = 0,
+    Max = 5,
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true,
+    DefaultValue = 0.05
+  })
+  table.insert(ctrls, {
+    Name = "TotalTime",
+    ControlType = "Knob",
+    ControlUnit = "Float",
+    Min = 0,
+    Max = 15,
+    PinStyle = "Both",
+    Count = 3,
+    UserPin = true,
+    --Default = 4.00
+  })
+  table.insert(ctrls, {
+    Name = "Clear",
+    ControlType = "Button",
+    ButtonType = "Trigger",
+    PinStyle = "Both",
+    Count = 3,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "Order",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true,
+    DefaultValue = true
+  })
+  table.insert(ctrls, {
+    Name = "LupanMode",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true,
+    --DefaultValue = true
+  })
+  table.insert(ctrls, {
+    Name = "LetterEndMsg",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = tonumber(props["Input Texts"].Value),--Change
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "LineEndMsg",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = tonumber(props["Input Texts"].Value),--Change
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "Color",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = 2,
+    UserPin = true,
+  })
+  return ctrls
+end
+
+--Layout of controls and graphics for the plugin UI to display
+function GetControlLayout(props)
+  local layout = {}
+  local graphics = {}
+  local CurrentPage = PageNames[props["page_index"].Value]
+  local Colors = {
+    Black     = {0,0,0}, White = {255,255,255}, White30 = {255,255,255,0.3}, White0 = {255,255,255,0},--White Alpha 1~0.1
+    Red       = {255,0,0}, ShureGreen = {178,255,51}, Lime = {0,255,0},
+    Gray      = {105,105,105}, Gray50 = {105,105,105,0.5}, DeepBlue = {5,97,165},--Deep Blue
+    OffGray   = {124,124,124}, On = {0,139,139},--Dark Cyan
+    SteelBlue = {70,130,180},  --Steel Blue
+    BackGray  = {102,102,102}, --Normal Background Color
+  }
+  local inputtextnum = tonumber(props["Input Texts"].Value)
+  local display_y = (inputtextnum >= 5) and inputtextnum or 1
+  local btn, label, space = {size = {40,20}}, {size = {100,20}}, 38
+  local textbox = {size = {206,38}}
+  local displaybox = {size = {345, 140+space*(display_y-1)}}
+  local led, msg = {size = {12,38}}, {size = {46,38}}
+  local groupbox = {size = {115,38}}
+  -- Local Functions
+  local function createGroupBox(text, position, size, color, fill, cornerRadius, strokeColor, strokeWidth, fontSize, hTextAlign)
+    table.insert(graphics, {
+      Type = "GroupBox",
+      Text = text,
+      Position = position,
+      Size = size,
+      Color = color,
+      Fill = fill,
+      CornerRadius = cornerRadius,
+      StrokeColor = strokeColor,
+      StrokeWidth = strokeWidth,
+      FontSize = fontSize,
+      HTextAlign = hTextAlign,
+    })
+  end
+  local function createText(text, position, size, fill, conerRadius, margin, padding, strokecolor, strokeWidth, textColor, fontSize, hTextAlign, vTextAlign)
+    table.insert(graphics, {
+      Type = "Text",
+      Text = text,
+      Position = position,
+      Size = size,
+      Fill = fill,
+      CornerRadius = conerRadius,
+      Margin = margin,
+      Padding = padding,
+      StrokeColor = strokecolor,
+      StrokeWidth = strokeWidth,
+      TextColor = textColor,
+      FontSize = fontSize,
+      HTextAlign = hTextAlign,
+      VTextAlign = vTextAlign,
+    })
+  end
+  local function createColorItem(name, prettyName, position)
+    return {
+      PrettyName = prettyName,
+      Style = "Text",
+      FontSize = 12,
+      Fill = Colors.White,
+      StrokeColor = Colors.Gray,
+      CornerRadius = 5,
+      Margin = 0,
+      Padding = 0,
+      StrokeWidth = 1,
+      Position = position,
+      Size = btn.size,
+      IsReadOnly = false
+    }
+  end
+  local function createLayoutItem(name, prettyName, style, position, size, fill, color, offColor, unlink, strokecolor, conerRadius, margin, padding, fontSize, strokeWidth, showTextBox, isReadonly, hTextAlign, vTextAlign, textBoxStyle, btnStyle, zOrder)
+    local item = {
+      PrettyName = prettyName,
+      Style = style,
+      Position = position,
+      Size = size,
+      Fill = fill,
+      Color = color,
+      OffColor = offColor,
+      UnlinkOffColor = unlink,
+      StrokeColor = strokecolor,
+      CornerRadius = conerRadius,
+      Margin = margin,
+      Padding = padding,
+      FontSize = fontSize or 12,
+      StrokeWidth = strokeWidth or 1,
+      ShowTextbox = showTextBox,
+      IsReadOnly = isReadonly,
+      HTextAlign = hTextAlign,
+      VTextAlign = vTextAlign,
+      TextBoxStyle = textBoxStyle,
+      ButtonVisualStyle = btnStyle,
+      ZOrder = zOrder,
+    }
+    if name then layout[name] = item end
+    return item
+  end
+  -- Main Code
+  if CurrentPage == "Single-Line" then
+    createGroupBox("", {0,0}, {775, 300+space*(inputtextnum -1)}, Colors.Black, Colors.White0, 0, Colors.Black, 0, 12, "Center")
+    createGroupBox("", {20,20}, {735,120}, Colors.Black, Colors.White0, 8, Colors.Black, 1, 12, "Center")
+    createGroupBox("", {20,170}, {270,100+space*(inputtextnum -1)}, Colors.Black, Colors.White0, 8, Colors.Black, 1, 12, "Center")
+    createGroupBox("", {300,170}, {330,100+space*(inputtextnum -1)}, Colors.Black, Colors.White0, 8, Colors.Black, 1, 12, "Center")
+    createText("Control", {98,2}, groupbox.size, Colors.White, 10, 0, 0, Colors.Black, 1, Colors.Black, 12, "Center")
+    createText("Input Text", {98,150}, groupbox.size, Colors.White, 10, 0, 0, Colors.Black, 1, Colors.Black, 12, "Center")
+    createText("Typewriter\nSingleLine Text", {408,150}, groupbox.size, Colors.White, 10, 0, 0, Colors.Black, 1, Colors.Black, 12, "Center")
+    --createText(text, position, size, color, conerRadius, margin, padding, strokecolor, strokeWidth, textColor, fontSize, hTextAlign, vTextAlign)
+    for i=1, 7 do
+      if     i==1 then createText("Processing Order", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==2 then createText("Loop On/Off", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==3 then createText("Text Speed", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==4 then createText("Total Time", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==5 then createText("LED OK Color", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==6 then createText("Start On/Off", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      else             createText("Clear", {52+100*(i-1)+5,48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      end
+    end
+    for i=1, 7 do
+      if     i==1 then createText("Processing Rev\nEffect", {52+100*(i-1),88}, {100,40}, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==2 then createText("Loop On/Off", {52+100*(i-1),88}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==3 then createText("Text Speed", {52+100*(i-1),88}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==4 then createText("Total Time", {52+100*(i-1),88}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==5 then createText("LED NG Color", {52+100*(i-1),88}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==6 then createText("Start Effect On/Off", {52+100*(i-1),88}, {105,20}, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      else             createText("Clear", {52+100*(i-1)+5,88}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      end
+    end
+  
+    -- System
+    for i = 1, 2 do
+      layout["Color " .. i] = createColorItem("Color " .. i, (i == 1) and "LED Color at OK" or "LED Color at NG", { 452, 68 + 40* (i-1)})
+    end
+  --name, prettyName, style, position, size, fill, color, offColor, unlink, strokecolor, conerRadius, margin, padding, fontSize, strokeWidth, showTextBox, isReadonly, hTextAlign, vTextAlign, textBoxStyle, btnStyle, zOrder
+    for i= 1, inputtextnum do
+    layout["InputText "..i] = createLayoutItem("InputText "..i, "Input Text "..i, "Text", {52,207 + space*(i-1)}, textbox.size, nil, Colors.White30, nil, nil, Colors.OffGray, 5, 0, 10, 14)
+    layout["DisplayScrollTextLine "..i] = createLayoutItem("DisplayScrollTextLine "..i, "Diplay Single Line Text "..i, "Text", {332,207 + space*(i-1)}, textbox.size, nil, Colors.White0, nil, nil, Colors.Gray, 5, 0, 10, 14, 0, nil, nil, "Left", nil, "NoBackground")
+    layout["LineOK "..i] = createLayoutItem("LineOK "..i, "Line LED "..i, "Button", {538,207 + space*(i-1)}, led.size, nil, Colors.White30, nil, nil, Colors.Gray, 0, 2, 0, 14, 0, nil, nil, nil, nil, nil, "Flat")
+    layout["LineEndMsg "..i] = createLayoutItem("LineEndMsg "..i, "Line Msg "..i, "Text", {553,207 + space*(i-1)}, msg.size, nil, Colors.White0, nil, nil, Colors.Gray, 0, 0, 0, 14, 0, nil, nil, "Center", nil, "NoBackground")
+      if i == 1 then
+      layout["InputText"] = createLayoutItem("InputText", "Input Text", "Text", {52,207 + space*(i-1)}, textbox.size, nil, Colors.White30, nil, nil, Colors.OffGray, 5, 0, 10, 14)
+      layout["DisplayScrollTextLine"] = createLayoutItem("DisplayScrollTextLine", "Diplay Single Line Text", "Text", {332,207 + space*(i-1)}, textbox.size, nil, Colors.White0, nil, nil, Colors.Gray, 5, 0, 10, 14, 0, nil, nil, "Left", nil, "NoBackground")
+      layout["LineOK"] = createLayoutItem("LineOK", "Line LED", "Button", {538,207 + space*(i-1)}, led.size, nil, Colors.White30, nil, nil, Colors.Gray, 0, 2, 0, 14, 0, nil, nil, nil, nil, nil, "Flat")
+      layout["LineEndMsg"] = createLayoutItem("LineEndMsg", "Line Msg", "Text", {553,207 + space*(i-1)}, msg.size, nil, Colors.White0, nil, nil, Colors.Gray, 0, 0, 0, 14, 0, nil, nil, "Center", nil, "NoBackground")
+      end
+    end
+    --LayoutItem(name, prettyName, style, position, size, fill, color, offColor, unlink, strokecolor, conerRadius, margin, padding, fontSize, strokeWidth, showTextBox, isReadonly, hTextAlign, vTextAlign, textBoxStyle, btnStyle, zOrder)
+    layout["StartLine"] = createLayoutItem("StartLine", "Start Single Line", "Button",{552,68},btn.size, nil, Colors.On, Colors.OffGray, true, Colors.Gray, 2, 2, 0)
+    layout["Order"] = createLayoutItem("Order", "Processing Order", "Button",{52,68},btn.size, nil, Colors.On, Colors.OffGray, true, Colors.Gray, 2, 2, 0)
+    layout["LineLoop"] = createLayoutItem("LineLoop", "Single Line Loop", "Button",{152,68},btn.size, nil, Colors.On, Colors.OffGray, true, Colors.Gray, 2, 2, 0)
+    layout["Clear 2"] = createLayoutItem("Clear 2", "Clear Single Line", "Button",{658,68},btn.size, nil, Colors.White, Colors.SteelBlue, true, Colors.Gray, 2, 2, 0)
+    layout["LineTime"] = createLayoutItem("LineTime", "Single Text Speed", "Text", {252,68}, btn.size, nil, Colors.SteelBlue, nil, nil, Colors.Gray, 5, 0, 0)
+    layout["TotalTime 2"] = createLayoutItem("TotalTime 2", "Single Line TotalTime", "Text", {352,68}, btn.size, nil, Colors.SteelBlue, nil, nil, Colors.Gray, 5, 0, 0)
+  
+    layout["StartEffect"] = createLayoutItem("StartEffect", "Start Single Effect Line", "Button",{552,108},btn.size, nil, Colors.On, Colors.OffGray, true, Colors.Gray, 2, 2, 0)
+    layout["EffectLoop"] = createLayoutItem("EffectLoop", "Single Effect Line Loop", "Button",{152,108},btn.size, nil, Colors.On, Colors.OffGray, true, Colors.Gray, 2, 2, 0)
+    layout["Clear 3"] = createLayoutItem("Clear 3", "Clear Effect Line", "Button",{658,108},btn.size, nil, Colors.White, Colors.SteelBlue, true, Colors.Gray, 2, 2, 0)
+    layout["EffectTime"] = createLayoutItem("EffectTime", "Single Effect Text Speed", "Text", {252,108}, btn.size, nil, Colors.SteelBlue, nil, nil, Colors.Gray, 5, 0, 0)
+    layout["TotalTime 3"] = createLayoutItem("TotalTime 3", "Single Effect Line TotalTime", "Text", {352,108}, btn.size, nil, Colors.SteelBlue, nil, nil, Colors.Gray, 5, 0, 0)
+  
+  elseif CurrentPage == "Multi-Line" then
+    -----------------------text, position, size, color, fill, cornerRadius, strokeColor, strokeWidth, fontSize, hTextAlign, vTextAlign
+    createGroupBox("", {0,0}, {775, 400+space*(display_y -1)}, Colors.Black, Colors.White0, 0, Colors.Black, 0, 12, "Center")
+    createGroupBox("", {20,20}, {735,120}, Colors.Black, Colors.White0, 8, Colors.Black, 1, 12, "Center")
+    createGroupBox("", {20,170}, {270,210+space*(display_y -1)}, Colors.Black, Colors.White0, 8, Colors.Black, 1, 12, "Center")
+    createGroupBox("", {300,170}, {455,210+space*(display_y -1)}, Colors.Black, Colors.White0, 8, Colors.Black, 1, 12, "Center")
+    --createGroupBox("", {766,170}, {455,210+space*(display_y -1)}, Colors.Black, Colors.White0, 8, Colors.Black, 1, 12, "Center")
+    createText("Control", {98,2}, groupbox.size, Colors.White, 10, 0, 0, Colors.Black, 1, Colors.Black, 12, "Center")
+    createText("Input Text", {98,150}, groupbox.size, Colors.White, 10, 0, 0, Colors.Black, 1, Colors.Black, 12, "Center")
+    createText("Typewriter\nMultiLine Text", {473,150}, groupbox.size, Colors.White, 10, 0, 0, Colors.Black, 1, Colors.Black, 12, "Center")
+    --createText("LupanMode", {939,150}, groupbox.size, Colors.White, 10, 0, 0, Colors.Black, 1, Colors.Black, 12, "Center")
+    for i=1, 6 do
+      if     i==1 then createText("Lupan Mode", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==2 then createText("Loop On/Off", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==3 then createText("Text Speed", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==4 then createText("Total Time", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      elseif i==5 then createText("LED OK Color", {52+100*(i-1),48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      else             createText("Start On/Off", {52+100*(i-1)+100,48}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+      end
+    end
+    createText("LED NG Color", {452,88}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+    createText("Clear", {652,88}, label.size, nil, 0, 0, 0, Colors.Black, 0, Colors.Black, 12, "Left")
+  
+    -- System
+    for i = 1, 2 do
+      layout["Color " .. i] = createColorItem("Color " .. i, (i == 1) and "LED Color at Start" or "LED Color at End", { 452, 68 + 40* (i-1)})
+    end
+  
+    for i= 1, inputtextnum do
+    layout["InputText "..i] = createLayoutItem("InputText "..i, "Input Text "..i, "Text", {52,207 + space*(i-1)}, textbox.size, nil, Colors.White30, nil, nil, Colors.OffGray, 5, 0, 10, 14)
+    layout["LetterOK "..i] = createLayoutItem("LetterOK "..i, "MultiLine LED "..i, "Button", {666,207 + space*(i-1)}, led.size, nil, Colors.White30, nil, nil, Colors.Gray, 0, 2, 0, 14, 0, nil, nil, nil, nil, nil, "Flat")
+    layout["LetterEndMsg "..i] = createLayoutItem("LetterEndMsg "..i, "MultiLine Msg "..i, "Text", {681,207 + space*(i-1)}, msg.size, nil, Colors.White0, nil, nil, Colors.Gray, 0, 0, 0, 14, 0, nil, nil, "Center", nil, "NoBackground")
+      if i == 1 then
+      layout["InputText"] = createLayoutItem("InputText", "Input Text", "Text", {52,207 + space*(i-1)}, textbox.size, nil, Colors.White30, nil, nil, Colors.OffGray, 5, 0, 10, 14)
+      layout["LetterOK"] = createLayoutItem("LetterOK", "MultiLine LED", "Button", {666,207 + space*(i-1)}, led.size, nil, Colors.White30, nil, nil, Colors.Gray, 0, 2, 0, 14, 0, nil, nil, nil, nil, nil, "Flat")
+      layout["LetterEndMsg"] = createLayoutItem("LetterEndMsg", "MultiLine Msg", "Text", {681,207 + space*(i-1)}, msg.size, nil, Colors.White0, nil, nil, Colors.Gray, 0, 0, 0, 14, 0, nil, nil, "Center", nil, "NoBackground")
+      end
+    end
+  --LayoutItem(name, prettyName, style, position, size, fill, color, offColor, unlink, strokecolor, conerRadius, margin, padding, fontSize, strokeWidth, showTextBox, isReadonly, hTextAlign, vTextAlign, textBoxStyle, btnStyle, zOrder)
+  --layout["DisplayLupan"] = createLayoutItem("DisplayLupan", "Diplay Lupan Text", "Text", {321,207}, displaybox.size, {240,240,241}, nil, nil, nil, Colors.Gray, 5, 0, 10, 52, 0, nil, nil, "Center", nil, "NoBackground")--{825,207}
+    layout["DisplayScrollTextLetter"] = createLayoutItem("DisplayScrollTextLetter", "Diplay Multi Line Text", "Text", {321,207}, displaybox.size, nil, Colors.White0, nil, nil, Colors.Gray, 5, 0, 5, 18, 0, nil, nil, "Left", "Top", "NoBackground", 0)
+    layout["StartLetter"] = createLayoutItem("StartLetter", "Start Mutil Line","Button",{652,68},btn.size, nil, Colors.On, Colors.OffGray, true, Colors.Gray, 2, 2, 0)
+    layout["LupanMode"] = createLayoutItem("LupanMode", "Lupan Mode", "Button",{52,68},btn.size, nil, Colors.On, Colors.OffGray, true, Colors.Gray, 2, 2, 0)
+    layout["LetterLoop"] = createLayoutItem("LetterLoop", "Multi Line Loop", "Button",{152,68},btn.size, nil, Colors.On, Colors.OffGray, true, Colors.Gray, 2, 2, 0)
+    layout["Clear 1"] = createLayoutItem("Clear 1", "Clear Multi Line", "Button",{652,108},btn.size, nil, Colors.White, Colors.SteelBlue, true, Colors.Gray, 2, 2, 0)
+    layout["LetterTime"] = createLayoutItem("LetterTime", "Multi Text Speed", "Text", {252,68}, btn.size, nil, Colors.SteelBlue, nil, nil, Colors.Gray, 5, 0, 0)
+    layout["TotalTime 1"] = createLayoutItem("TotalTime 1", "Multi Line TotalTime", "Text", {352,68}, btn.size, nil, Colors.SteelBlue, nil, nil, Colors.Gray, 5, 0, 0)
+    layout["DisplayLupan"] = createLayoutItem("DisplayLupan", "Diplay Lupan Text", "Text", {321,207}, displaybox.size, nil, {240,240,241}, nil, nil, Colors.Gray, 5, 0, 10, 52, 0, nil, nil, "Center", nil, 5)--{825,207}
+  
+  elseif CurrentPage == "Help" then
+  ---------text, position, size, color, fill, cornerRadius, strokeColor, strokeWidth, fontSize, hTextAlign, vTextAlign
+    createGroupBox("", {0,0}, {775,585}, Colors.Black, Colors.White0, 0, Colors.Black, 0, 12, "Center")
+    createGroupBox("", {20,20}, {735,545}, Colors.Black, Colors.White0, 8, Colors.Black, 1, 12, "Center")
+    createText("Help", {98,2}, groupbox.size, Colors.White, 10, 0, 0, Colors.Black, 1, Colors.Black, 12, "Center")
+  local HelpText = [[
+  
+    ■Loop button
+      On  -> When on, the character string that has finished processing will start processing again.
+      Off => When the process is finished, the Start button will be turned off.
+    ■Text Speed
+      Float value from 0.01 to 5sec.
+      Smaller values are processed faster.
+    ■Total Time
+      Float value from 0 to 15sec.
+      The time from when text processing started until it finished.
+      It changes depending on the number of characters in Text Time and InputText.
+    ■LED Color
+      The color of the LED displayed when processing is finished.
+      OK color when the Line/MultiLine Msg Pin's String is "OK","true". Otherwise, it will be NG color. it's usually OK color.
+      The LED will be NG color, but you can enter anything other than "OK" and it will be displayed when the process is completed.
+  
+    🔴Single Line tab
+    ■Processing Order
+      On  -> Scrolls the text entered in the Input text in order like a typewriter.
+      Off -> Starts scrolling the text entered in Enter text all at once.
+    ■Processing Rev Effect
+      The text is displayed one character at a time, and when the end of the line is reached, it moves to the next line below.
+  
+    🔵Multi Line tab
+    ■Lupan Mode
+      On  -> Like the opening of Lupine's anime, characters are displayed one by one, and finally all the characters are displayed.
+      Off -> InputText 1 to i are concatenated, and each InputText is inserted into a new line and
+      scrolled in a multi-line style like a typewriter.
+      ★The Lupine mode display frame and the multiline display frame are placed in the same place with IsInvisible true/false.
+      A multiline text frame can have the Vertical Alignment changed to
+      Bottom, Top, or Center, which has the effect of displaying the characters bottom-to-top, center-to-top, and top-to-bottom.
+  
+    *Known Issues: If the InputText includes nil, after performing the Effect Process,
+      performing the Order Process causes the sequence of LEDs for the nil portion of the input text
+      to become reversed and not correctly invisible.
+      The opposite process is also the same. If nil is not included, there doesn't seem to be an issue. I can't come up with a solution.
+      ]]
+    createText(HelpText, {38,40}, {700,525}, nil, 10, 0, 20, Colors.Black, 0, Colors.Black, 12, "Left", "Top")
+  end
+  return layout, graphics
+end
+
+--Start event based logic
+if Controls then
+  utf8 = require 'utf8' rapidjson = require 'rapidjson'
+  --Variable--------------------------------------------------------------------------------------------------------------
+  cPos, Pos, LetterPos = 1, {}, 1 --Current Positions
+  scrollLetter = {}
+  ScrollTimer, ScrollLineTimers = Timer.New(), {}
+  TypeTimers = {}
+  emptyInput = {}
+  emptyInitialized = false
+  empInit = false
+  totaltime = {}
+  colors = {"lime", "red"}
+  msgtbl = {}
+  coltbl = {}
+  sortState = 0  -- 0: Init, 1: Non Sort, -1: Sort
+  sortflg = false
+  function TypeTableCheck(control) return type(control) == "table" and control or {control} end
+  Controls.InputText = TypeTableCheck(Controls.InputText)
+  Controls.DisplayScrollTextLine = TypeTableCheck(Controls.DisplayScrollTextLine)
+  Controls.LetterOK = TypeTableCheck(Controls.LetterOK)
+  Controls.LineOK = TypeTableCheck(Controls.LineOK)
+  Controls.LetterEndMsg = TypeTableCheck(Controls.LetterEndMsg)
+  Controls.LineEndMsg = TypeTableCheck(Controls.LineEndMsg)
+  -- Functions----------------------------------------------------------------------------------
+  --Display Text
+  function DisplayText(text, controlbox)
+    if text then
+      local startPos = utf8.offset(text, 1) --Str Sub StartPos
+      local endPos = utf8.offset(text, LetterPos + 1) --Str Sub EndPos
+      local modePos = utf8.offset(text, LetterPos)
+      controlbox.String = (startPos and endPos) and string.sub(text, startPos, endPos - 1) or ""
+      Controls.DisplayLupan.String = (modePos and endPos) and string.sub(text, modePos, endPos - 1) or ""
+      --print(controlbox.String)
+      local newLetterPos = controlbox.String:find('\n', lastLetterPos + 1)--Seach Carriage Return
+      if newLetterPos then
+        lastLetterPos = newLetterPos
+        if inLetterOKcnt < #Controls.InputText then
+          inLetterOKcnt = inLetterOKcnt + 1
+          ToggleEmptyVisibility(Controls.LetterOK, inLetterOKcnt)
+          ToggleEmptyVisibility(Controls.LetterEndMsg, inLetterOKcnt)
+          if #Controls.InputText ~= 1 then
+            if inLetterOKcnt == #Controls.InputText then
+              Controls.DisplayLupan.IsInvisible = true
+              Controls.DisplayScrollTextLetter.IsInvisible = false
+            end
+          else
+            if inLetterOKcnt == 1 then
+              Controls.DisplayLupan.IsInvisible = true
+              Controls.DisplayScrollTextLetter.IsInvisible = false
+            end
+          end
+        end
+      end
+    else
+      ScrollingLetterInt()
+    end
+  end
+  --Scrolling Letter
+  function ScrollingLetter(delay, controlbox, scrollText)
+    local text, len = scrollText, utf8.len(scrollText)
+    DisplayText(text, controlbox)
+  
+    ScrollTimer.EventHandler = function()
+      if LetterPos <= len then
+        DisplayText(text, controlbox)
+        LetterPos = LetterPos + 1
+      else
+        LetterPos = 1
+        print("done letter")
+        if Controls.LetterLoop.Boolean then
+          ScrollingLetterInt()
+          Controls.StartLetter.Boolean = true
+          Controls.StartLetter.EventHandler()
+        else
+          ScrollTimer:Stop()
+          Controls.StartLetter.Boolean = false
+          Controls.DisplayLupan.IsInvisible = true
+          Controls.DisplayScrollTextLetter.IsInvisible = false
+        end
+      end
+    end
+    if delay ~= nil then
+      ScrollTimer:Start(delay)
+    end
+  end
+  
+  --Initialize ScrollingLetter
+  function ScrollingLetterInt()
+    LetterPos, inLetterOKcnt, lastLetterPos = 1, 0, 0
+    Controls.DisplayScrollTextLetter.String = ''
+    Controls.DisplayLupan.String = ''
+    Controls.DisplayLupan.IsInvisible = not Controls.LupanMode.Boolean
+    Controls.DisplayScrollTextLetter.IsInvisible = Controls.LupanMode.Boolean
+    SetInvisibility(Controls.LetterOK)
+    SetInvisibility(Controls.LetterEndMsg)
+  end
+  ---------------------------------------------------------------------------------------------------------------------------
+  ---------------------------------------------------------------------------------------------------------------------------
+  --Display LineText
+  function DisplayLineText(text, controlbox, index)
+    if text then
+      local startPos = utf8.offset(text, 1)
+      local endPos = utf8.offset(text, Pos[index] + 1)
+      controlbox.String = (startPos and endPos) and string.sub(text, startPos, endPos - 1) or ""
+      --print(controlbox.String)
+    else
+      ScrollingLineInt()
+    end
+  end
+  --Scrolling LineText
+  function ScrollingLine(delay, controlbox, index, scrollText, order)
+    local text, len = scrollText, utf8.len(scrollText)
+    DisplayLineText(text, controlbox, index)
+    local ScrollLineTimer = ScrollLineTimers[index] or Timer.New()
+    ScrollLineTimers[index] = ScrollLineTimer
+  
+    ScrollLineTimer.EventHandler = function()
+      if Pos[index] and Pos[index] <= len then-- Check if valid start and end positions for text slicing
+        local startPos = utf8.offset(text, 1)
+        local endPos = utf8.offset(text, Pos[index] + 1)
+        local cText = string.sub(text, startPos, endPos - 1)
+        DisplayLineText(cText, controlbox, index)
+        Pos[index] = Pos[index] + 1
+        ToggleEmptyVisibility(Controls.LineOK, index, true, coltbl, nil) --Set reset invisibility true boolean false
+        ToggleEmptyVisibility(Controls.LineEndMsg, index, true, nil, msgtble) --Set reset invisibility true boolean false
+      else-- When start and end positions are not valid, toggle LED indicators
+        if order and index < #Controls.DisplayScrollTextLine then--Start the next timer in the order if required
+          ScrollingLine(delay, Controls.DisplayScrollTextLine[index + 1], index + 1, Controls.InputText[index + 1].String, order)
+        end
+        ToggleEmptyVisibility(Controls.LineOK, index, nil, coltbl, nil)
+        ToggleEmptyVisibility(Controls.LineEndMsg, index, nil, nil, msgtbl)
+        ScrollLineTimer:Stop()
+  
+        if index == #Controls.InputText then
+          Controls.StartLine.Boolean = false
+          print("done line")
+          if Controls.LineLoop.Boolean then
+            Controls.StartLine.Boolean = true
+            Timer.CallAfter(function()
+            Controls.StartLine.EventHandler()
+            end, delay)
+          end
+        end
+      end
+  
+    end
+    if delay ~= nil then
+      ScrollLineTimer:Start(delay)
+    end
+  end
+  
+  --Initialize ScrollingLine
+  function ScrollingLineInt()
+    for index, controlbox in ipairs(Controls.DisplayScrollTextLine) do
+      Pos[index] = 1
+      controlbox.String = ""
+      Controls.LineOK[index].IsInvisible = true
+      Controls.LineOK[index].Boolean = false
+      Controls.LineEndMsg[index].IsInvisible = true
+      Controls.LineEndMsg[index].Boolean = false
+    end
+    ScrollLineTimers = {}
+  end
+  ---------------------------------------------------------------------------------------------------------------------------
+  ---------------------------------------------------------------------------------------------------------------------------
+  --Display Type Text
+  function DisplayTypeText(index, text)
+    if text then
+      local startPos = utf8.offset(text, 1)
+      local endPos = utf8.offset(text, Pos[index] + 1)
+      Controls.DisplayScrollTextLine[1].String = (startPos and endPos) and string.sub(text, startPos, endPos - 1) or ""
+      --print(Controls.DisplayScrollTextLine[1].String)
+    else
+      TypewritterInt()
+    end
+  end
+  -- Typewrite function with cIndex parameter
+  function Typewrite(delay, inptext)
+    local text, len = inptext, string.len(inptext)
+    local TypeTimer = TypeTimers[cIndex] or Timer.New()
+    TypeTimers[cIndex] = TypeTimer
+  
+    TypeTimer.EventHandler = function()
+      if Pos[cIndex] <= len then
+        local startPos = utf8.offset(text, 1)
+        local endPos = utf8.offset(text, Pos[cIndex] + 1)
+  
+        if startPos and endPos then-- Check if valid start and end positions for text slicing
+          local cText = string.sub(text, startPos, endPos - 1)
+          DisplayTypeText(cIndex, cText)
+          Pos[cIndex] = Pos[cIndex] + 1
+        else-- When start and end positions are not valid, toggle LED indicators
+          ToggleEmptyVisibility(Controls.LineOK, cIndex, nil, coltbl, nil)--Normal Toggle LED
+          ToggleEmptyVisibility(Controls.LineEndMsg, cIndex, nil, nil, msgtbl)
+          Pos[cIndex] = len + 1
+        end
+      else--End of Character
+        if Controls.InputText[cIndex + 1] and Controls.DisplayScrollTextLine[cIndex + 1] then
+          local scrollIndex = 2
+          for i = cIndex, 1, -1 do
+            Controls.DisplayScrollTextLine[scrollIndex].String = Controls.InputText[i].String
+            ToggleEmptyVisibility(Controls.LineOK, scrollIndex, nil, coltbl, nil)--Toggle Next LED
+            ToggleEmptyVisibility(Controls.LineEndMsg, scrollIndex, nil, nil, msgtbl)
+            scrollIndex = scrollIndex + 1
+          end
+        elseif cIndex == #Controls.InputText then--Final Index
+          Controls.DisplayScrollTextLine[1].String = Controls.InputText[cIndex].String
+          Controls.LineOK[1].Color = coltbl[cIndex]
+          Controls.LineEndMsg[1].String = msgtbl[cIndex]
+        end
+        ToggleEmptyVisibility(Controls.LineOK, 1, nil, coltbl, nil)--When finished, Toggle LED
+        ToggleEmptyVisibility(Controls.LineEndMsg, 1, nil, nil, msgtbl)
+        -- Stop the timer and reset the character position
+        TypeTimer:Stop()
+        Pos[cIndex] = 1
+        -- Move to the next index for processing
+        cIndex = cIndex + 1
+        if Controls.InputText[cIndex] then-- If there is more text to process, continue the typewriting effect with the next text
+          Timer.CallAfter(function()
+          Typewrite(delay, Controls.InputText[cIndex].String)
+            ToggleEmptyVisibility(Controls.LineOK, 1, true, nil, coltbl, nil)
+            ToggleEmptyVisibility(Controls.LineEndMsg, 1, true, nil, nil, msgtbl)
+          end, delay)
+        else-- If all text has been processed, reset variables and potentially trigger the next effect
+          cIndex = 1
+          empInit = false
+          Controls.StartEffect.Boolean = false
+          print("done effect")
+          if Controls.EffectLoop.Boolean then
+            Controls.StartEffect.Boolean = true
+            Controls.StartEffect.EventHandler()
+          end
+        end
+      end
+    end
+  
+    if delay ~= nil then
+      TypeTimer:Start(delay)
+    end
+  end
+  
+  -- Initialize Typewritter
+  function TypewritterInt()
+    for index, controlbox in ipairs(Controls.DisplayScrollTextLine) do
+      Pos[index] = 1
+      controlbox.String = ""
+      Controls.LineOK[index].IsInvisible = true
+      Controls.LineOK[index].Boolean = false
+      Controls.LineEndMsg[index].IsInvisible = true
+      Controls.LineEndMsg[index].Boolean = false
+    end
+    TypeTimers = {}
+    cIndex = 1 --cIndex init
+    empInit = true --typewritterflag
+  end
+  -------------------------------------------------------------------------------------------------
+  -- Helper funciton
+  function SetInvisibility(name)
+    for i, ctl in ipairs(name) do
+    ctl.IsInvisible = true
+    ctl.Boolean = not ctl.IsInvisible
+    end
+  end
+  -- Helper function to OK button isInvisible and Boolean
+  function ToggleEmptyVisibility(control, index, rev, colorTable, msgTable)
+    if index >= 1 then
+      control[index].IsInvisible = emptyInput[index]
+      control[index].Boolean = not emptyInput[index]
+      if colorTable then
+        control[index].Color = colorTable[index] -- Set color based on sorted colorTable
+      end
+      if msgTable then
+        control[index].String = msgTable[index] -- Set string based on sorted msgTable
+      end
+      if rev then
+        control[index].IsInvisible = true
+        control[index].Boolean = false
+      end
+    end
+  end
+  -- Helper function to recalculate maxLenIndex and related variables
+  function CalculateMaxLenIndex()
+    maxLen, maxLenIndex, oldLen = 0, 0, 0
+    for i, text in ipairs(Controls.InputText) do
+      local newLen = utf8.len(text.String)
+      oldLen = oldLen + newLen
+      lettercnt = oldLen
+  
+      if newLen > maxLen then
+        maxLenIndex = i
+        maxLen = newLen
+      end
+    end
+    linecnt = maxLen + 1
+    --print("maxLenIndex: " .. maxLenIndex, "maxLen: " .. maxLen, "linecnt: " .. linecnt)
+    --print("lettercnt: " .. lettercnt, "#scrollLetter: "..#scrollLetter, "scrolltable: "..rapidjson.encode(scrollLetter))
+  end
+  --Update Functions
+  function UpdateScrolling()
+    CalculateMaxLenIndex()
+    Controls.StartLetter.EventHandler()
+    Controls.StartLine.EventHandler()
+    Controls.StartEffect.EventHandler()
+  end
+  --Update Empty, Col, Msg Table Functions
+  function UpdateEmptyInput()
+    emptyInput = {}  -- Clear the table
+    for i, text in ipairs(Controls.InputText) do
+      table.insert(emptyInput, text.String == '' and true or false)
+    end
+    if emptyInitialized then
+      table.remove(scrollLetter)
+    end
+    table.insert(scrollLetter, "")
+    emptyInitialized = true
+  
+    local sortingTable = {}
+    local sortmsgTable = {}
+    local sortcolTable = {}
+  
+    if #Controls.InputText then
+      if sortState == -1 then
+        for i = #Controls.InputText, 1, -1 do
+          table.insert(sortingTable, emptyInput[i])
+          table.insert(sortmsgTable, msgtbl[i])
+          table.insert(sortcolTable, coltbl[i])
+        end
+        sortflg = true
+      elseif sortflg == true then
+        for i = #Controls.InputText, 1, -1 do
+          table.insert(sortingTable, emptyInput[i])
+          table.insert(sortmsgTable, msgtbl[i])
+          table.insert(sortcolTable, coltbl[i])
+        end
+        sortflg = false
+      else
+        for i = 1, #Controls.InputText do
+          table.insert(sortingTable, emptyInput[i])
+          table.insert(sortmsgTable, msgtbl[i])
+          table.insert(sortcolTable, coltbl[i])
+        end
+      end
+    end
+  
+    emptyInput = {}  -- Clear the table
+    for i, entry in ipairs(sortingTable) do
+      table.insert(emptyInput, entry)
+    end
+    msgtbl = {}
+    for i, entry in ipairs(sortmsgTable) do
+      table.insert(msgtbl, entry)
+    end
+    coltbl = {}
+    for i, entry in ipairs(sortcolTable) do
+      table.insert(coltbl, entry)
+    end
+    --print("StartEffect.Boolean: "..tostring(Controls.StartEffect.Boolean), "sortflg: "..tostring(sortflg))
+    --print("State: "..sortState, #emptyInput, rapidjson.encode(emptyInput))
+    --print("State: "..sortState, "msgtbl: "..rapidjson.encode(msgtbl))
+    --print("State: "..sortState, "coltbl: "..rapidjson.encode(coltbl))
+  end
+  -------------------------------------------------------------------------------------------------------
+  --MathFloor 0.00
+  function floor2decimal(num)
+    return math.floor(num * 1000) / 1000
+  end
+  -- Helper function to update total time and letter/line delays
+  function UpdateTimesDelays()
+    local maxLetterTime, maxLineTime, maxEffectTime, minTime = 0.3, 1.5, 1.5, 0.01
+    -- LetterTime
+    Controls.LetterTime.Value = math.min(maxLetterTime, math.max(minTime, Controls.LetterTime.Value))
+    letterDelay = Controls.LetterTime.Value
+    totaltime[1] = (lettercnt + #scrollLetter) * letterDelay
+    Controls.TotalTime[1].Value = floor2decimal(totaltime[1])
+    -- LineTime
+    Controls.LineTime.Value = not Controls.Order.Boolean and math.min(maxLineTime, math.max(minTime, Controls.LineTime.Value)) or math.min(maxLetterTime, math.max(minTime, Controls.LineTime.Value))
+    lineDelay = Controls.LineTime.Value
+    totaltime[2] = not Controls.Order.Boolean and linecnt * lineDelay or (lettercnt + #scrollLetter) * lineDelay
+    Controls.TotalTime[2].Value = floor2decimal(totaltime[2])
+    -- EffectTime
+    Controls.EffectTime.Value = math.min(maxEffectTime, math.max(minTime, Controls.EffectTime.Value))
+    effectDelay = Controls.EffectTime.Value
+    totaltime[3] = (lettercnt + #scrollLetter * 2) * effectDelay
+    Controls.TotalTime[3].Value = floor2decimal(totaltime[3])
+  
+    UpdateScrolling()
+  end
+  -- EventHandlers----------------------------------------------------------------------------------
+  Controls.LetterTime.EventHandler = UpdateTimesDelays
+  Controls.LineTime.EventHandler = UpdateTimesDelays
+  Controls.EffectTime.EventHandler = UpdateTimesDelays
+  --TotalTime EventHanlder
+  Controls.TotalTime[1].EventHandler = function()
+    local minTime = 0.5
+    local value = math.max(minTime, Controls.TotalTime[1].Value)
+    letterDelay = value / (lettercnt + #scrollLetter)
+    Controls.LetterTime.Value = letterDelay
+    UpdateTimesDelays()
+  end
+  Controls.TotalTime[2].EventHandler = function()
+    local minTime = 0.5
+    local value = not Controls.Order.Boolean and math.max(minTime, Controls.TotalTime[2].Value) or math.max(minTime, Controls.TotalTime[2].Value)
+    lineDelay = not Controls.Order.Boolean and value / linecnt or value / (lettercnt + #scrollLetter)
+    Controls.LineTime.Value = lineDelay
+    UpdateTimesDelays()
+  end
+  Controls.TotalTime[3].EventHandler = function()
+    local minTime = 0.5
+    local value = math.max(minTime, Controls.TotalTime[3].Value)
+    Controls.TotalTime[3].Value = value
+    effectDelay = value / lettercnt
+    Controls.EffectTime.Value = effectDelay
+  end
+  --StartLetter EventHanlder
+  Controls.StartLetter.EventHandler = function()
+    if Controls.StartLetter.Boolean then print("start letter")
+      if sortState ~= 1 then
+        sortState = 1
+        UpdateEmptyInput()
+      end
+      ScrollingLetterInt()
+      ScrollingLetter(letterDelay, Controls.DisplayScrollTextLetter, table.concat(scrollLetter, '\n'))
+    else
+      ScrollTimer:Stop()
+      ScrollingLetterInt()
+    end
+  end
+  --StartLine EventHanlder
+  Controls.StartLine.EventHandler = function()
+    if not Controls.StartEffect.Boolean then
+      if Controls.StartLine.Boolean then print("start line")
+        if sortState ~= 1 then
+          sortState = 1
+          UpdateEmptyInput()
+        end
+        ScrollingLineInt()
+  
+        if Controls.Order.Boolean then
+          for index, controlbox in ipairs(Controls.DisplayScrollTextLine) do
+            ScrollingLine(lineDelay, Controls.DisplayScrollTextLine[1], 1, Controls.InputText[1].String, Controls.Order.Boolean)
+          end
+  
+        elseif not Controls.Order.Boolean then
+          for index, controlbox in ipairs(Controls.DisplayScrollTextLine) do
+            ScrollingLine(lineDelay, controlbox, index, Controls.InputText[index].String, false)
+          end
+        end
+  
+      else
+        for _, timer in pairs(ScrollLineTimers) do
+          timer:Stop()
+        end
+        ScrollingLineInt()
+      end
+    else
+      Controls.StartLine.Boolean = false
+    end
+  end
+  --StarEffect EventHanlder
+  Controls.StartEffect.EventHandler = function()
+    if not Controls.StartLine.Boolean then
+      if Controls.StartEffect.Boolean then print("start effect")
+        if sortState ~= -1 then
+          sortState = -1
+          sortflg = true
+          UpdateEmptyInput()
+        end
+        TypewritterInt()
+  
+        cIndex = 1
+        Typewrite(effectDelay, Controls.InputText[cIndex].String)
+  
+      else
+        for _, timer in pairs(TypeTimers) do
+          timer:Stop()
+        end
+        TypewritterInt()
+      end
+    else
+      Controls.StartEffect.Boolean = false
+    end
+  end
+  --InputText EventHandler
+  for i, text in ipairs(Controls.InputText) do
+    scrollLetter[i] = text.String
+    text.EventHandler = function()
+      local newString = text.String
+      if scrollLetter[i] ~= newString then
+        scrollLetter[i] = newString
+        CalculateMaxLenIndex()
+        Controls.LetterTime.EventHandler()
+        Controls.LineTime.EventHandler()
+        Controls.EffectTime.EventHandler()
+        --[[ funciton ~()にして trueなら下記、falseなら何もしないモードをつけても良いかも。
+        Controls.StartLetter.Boolean = true
+        Controls.StartLine.Boolean = true
+        Controls.StartLetter.EventHandler()
+        Controls.StartLine.EventHandler()
+        --]]
+      end
+      UpdateEmptyInput()--EmptyInput Search
+    end
+    --print("scrolltable: " .. rapidjson.encode(scrollLetter))
+  end
+  --To Order Sequence Line
+  Controls.Order.EventHandler = function()
+    Controls.TotalTime[2].EventHandler()
+  end
+  --Clear EventHandler
+  for i, ctl in ipairs(Controls.Clear) do
+    ctl.EventHandler = function()
+      if i == 1 then Controls.StartLetter.Boolean = false --Controls.Clear[1]
+      ScrollTimer:Stop() ScrollingLetterInt()
+      elseif i == 2 then Controls.StartLine.Boolean = false --Controls.Clear[2]
+        for _, timer in pairs(ScrollLineTimers) do
+          timer:Stop() end ScrollingLineInt()
+      else Controls.StartEffect.Boolean = false --Controls.Clear[3]
+        for _, timer in pairs(TypeTimers) do
+        timer:Stop() end TypewritterInt()
+      end
+    end
+  end
+  --Lupan Mode
+  Controls.LupanMode.EventHandler = function()
+    Controls.DisplayLupan.IsInvisible = not Controls.LupanMode.Boolean
+    Controls.DisplayScrollTextLetter.IsInvisible = Controls.LupanMode.Boolean
+    UpdateEmptyInput()
+  end
+  --ColorChange EventHanlder
+  function SetMsgToOK(control)
+    for i, str in ipairs(control) do
+      Controls.LineOK[i].Color = colors[1]
+      Controls.LetterOK[i].Color = colors[1]
+      str.EventHandler = function()
+        str.String = (str.String == "" or str.String:lower():find("ok") or str.String:lower():find("true")) and "OK"
+        or (str.String:lower():find("false")) and "NG"
+        or (str.String:lower():find("fault")) and "Fault"
+        or (str.String:lower():find("missing")) and "Missing"
+        or (str.String == "NG") and "NG"
+        or str.String
+        Controls.LineOK[i].Color = str.String == "OK" and colors[1] or colors[2]
+        Controls.LetterOK[i].Color = str.String == "OK" and colors[1] or colors[2]
+  
+        coltbl[i] = Controls.LineOK[i].Color
+        msgtbl[i] = Controls.LineEndMsg[i].String
+      end
+      str.EventHandler()
+    end
+  end
+  --Colors EventHandler OK, NG
+  for i, color in ipairs(Controls.Color) do
+    color.EventHandler = function()
+      local j = i
+      if color.String == "" then color.String = colors[j]; color.Color = colors[j] end
+      colors[j] = color.String
+      color.Color = color.String
+      SetMsgToOK(Controls.LineEndMsg)
+      SetMsgToOK(Controls.LetterEndMsg)
+    end
+    color.EventHandler()
+  end
+  -- Initialize----------------------------------------------------------------------------------
+  SetInvisibility(Controls.LineOK)
+  SetInvisibility(Controls.LetterOK)
+  SetInvisibility(Controls.LineEndMsg)
+  SetInvisibility(Controls.LetterEndMsg)
+  SetMsgToOK(Controls.LineEndMsg)
+  SetMsgToOK(Controls.LetterEndMsg)
+  CalculateMaxLenIndex()
+  --UpdateEmptyInput()
+  ScrollingLetterInt()
+  ScrollingLineInt()
+  TypewritterInt()
+  Controls.LetterTime.EventHandler()
+  Controls.LineTime.EventHandler()
+  Controls.LupanMode.EventHandler()
+end
