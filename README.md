@@ -16,7 +16,5 @@ The code includes event handlers for changes in GUI control states, text updates
 
 In summary, this plugin is a control program for displaying text in a typewriter-style manner with animation effects.
 
-New Ver Non Need layer<br>
-![Alt text](Typewriter3.gif)
+New Ver Non Need layer<br>![Alt text](Typewriter3.gif)
 ![Alt text](Typewriter2.gif)
-![Alt text](Typewriter4.gif)
